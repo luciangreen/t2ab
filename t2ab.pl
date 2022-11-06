@@ -17,6 +17,7 @@
 :- include('../Text-to-Breasonings/mergetexttobrdict.pl').
 
 :-include('../Text-to-Breasonings/texttobr.pl').
+:-include('../Text-to-Breasonings/text_to_breasonings.pl').
 
 :- include('../listprologinterpreter/listprolog').
 :- include('../Text-to-Breasonings/texttobr2qb').
@@ -43,7 +44,7 @@ t2ab(N1,Filex1,Stringx1,M1,Words_to_read) :-
 	M=all), %% If m1 is undefined or all then m=all
 
 	prep(List1,BrDict03,AlgDict_x,AlgDict,Filex,Stringx1,M),
-	br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N),
+	br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N,[],AlgString),
 	sort(BrDict2,BrDict3),
 	(BrDict03=BrDict3->true;
 	(open_s("../Text-to-Breasonings/brdict1.txt",write,Stream),
@@ -74,6 +75,11 @@ t2ab(N1,Filex1,Stringx1,M1,Words_to_read) :-
  	texttobr2_a(Dividend_b,medicine),
  	texttobr2_a(Dividend_b,pedagogy),
  	
+ 	flatten(AlgString,AlgString1),
+ 	foldr(string_concat,AlgString1,"",AlgString2),
+	%writeln1(AlgString2),
+	texttobr2(u,u,AlgString2,u),
+
  	!.
 
 %% Truncates the list if m is not undefined and m is greater than or equal to the length of string0
@@ -230,11 +236,11 @@ string_atom(AlgDict0,Atom1),atom_to_term(Atom1,AlgDict01,_),
 
 ,!.
 
-br2(_,A,A,B,B,C,C,0) :- !.
-br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N1) :-
-	br(List1,BrDict03,BrDict21,AlgDict_x,AlgDict_x21,AlgDict,AlgDict21),
+br2(_,A,A,B,B,C,C,0,L,L) :- !.
+br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N1,L1,L2) :-
+	br(List1,BrDict03,BrDict21,AlgDict_x,AlgDict_x21,AlgDict,AlgDict21,L1,L3),
 	N2 is N1-1,
-	br2(List1,BrDict21,BrDict2,AlgDict_x21,AlgDict_x2,AlgDict21,AlgDict2,N2),!.
+	br2(List1,BrDict21,BrDict2,AlgDict_x21,AlgDict_x2,AlgDict21,AlgDict2,N2,L3,L2),!.
 
 towords2([],A,A) :- !.
 towords2(BrDict03,A,B) :-
@@ -318,9 +324,9 @@ digits([X|Xs]) --> [X], {(char_type(X,digit)->true;(string_codes(Word2,[X]),Word
 %%digits([X]) --> [X], {(char_type(X,digit);(string_codes(Word2,[X]),Word2="."))}, !.
 digits([]) --> [].
 
-br([],B,B,C,C,D,D) :-
+br([],B,B,C,C,D,D,L,L) :-
 	!.
-br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7) :-
+br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,AlgString2) :-
 	downcase_atom(Word, Word2), atom_string(Word2,Word3),
 	
 	words_to_read(WR1),
@@ -344,20 +350,25 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7) :-
 	
 	%%writeln([word3,Word3]),
 	
+	%trace,
+	
 	(member([Word3,String4],BrDict)-> 
-	BrDict3=BrDict;
+	(BrDict3=BrDict,AlgString1=AlgString3,String5=Word3);
 	((repeat,
 	write("Enter object name (without spaces), if different for "), writeln(Word3),read_string(user_input, "\n", "\r", _End2, String2),split_string(String2, "", " ", String3),String3=[String4]),
 	%%*brth(Word3,_Brth),
 
 (String4=""->String5=Word3;String5=String4),
 	append(BrDict,[[Word3,String5]],BrDict3),
-	texttobr2(1,u,String5,1))),
+	append(AlgString1,[[Word3," ",String5," "]],AlgString3)
+	%texttobr2(1,u,String5,1)
+	)
+	),
 
 	downcase_atom(String5, String52), atom_string(String52,String53),
 
 	(member([String53,_X],AlgDict4)->
-	AlgDict41=AlgDict4;
+	(AlgDict41=AlgDict4,AlgString3=AlgString4,String51=String53);
 	
 	((repeat,
 	write("Enter algorithm name for "), writeln(String53),read_string(user_input, "\n", "\r", _, String21),split_string(String21, "", " ", String31),String31=[String41]),
@@ -365,16 +376,22 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7) :-
 
 (String41=""->String51=String53;String51=String41),
 	append(AlgDict4,[[String53,String51]],AlgDict41),
-	texttobr2(1,u,String51,1))),
+	append(AlgString3,[String51," "],AlgString4)
+	%texttobr2(1,u,String51,1)
+	)),
 
 	downcase_atom(String51, String521), atom_string(String521,String531),
 
 	(member([String531,_Y],AlgDict6)->
-	AlgDict61=AlgDict6;
+	(AlgDict61=AlgDict6,AlgString4=AlgString5);
 	
 	((repeat,
 	write("Enter Prolog algorithm for "), writeln(String531),read_string(user_input, "\n", "\r", _End, String),%split_string(String, ",", " ", Values),Values=[X1,Y1,Z1],number_string(X,X1),number_string(Y,Y1),number_string(Z,Z1)),
-	append(AlgDict6,[[String531,String]],AlgDict61)))),
+	(String=""->String11=String531;String11=String),
+	
+	append(AlgDict6,[[String531,String11]],AlgDict61),
+	append(AlgString4,[String11,"\n\n"],AlgString5)
+	))),
 	%%*brth(String53,_Brth2),
 	%%write("br(\'"),write(Word3),writeln("\',)."),
 %%	writeln([Word3,X,Y,Z]),
@@ -382,7 +399,7 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7) :-
 	
 	
 
-br(Words,BrDict3,BrDict2,AlgDict41,AlgDict5,AlgDict61,AlgDict7).
+br(Words,BrDict3,BrDict2,AlgDict41,AlgDict5,AlgDict61,AlgDict7,AlgString5,AlgString2).
 	%%).
 
 %% finds unknown words, asks for their br in form "n of m: word", verify, (can go back x) append and sort, save
