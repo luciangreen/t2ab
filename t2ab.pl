@@ -47,7 +47,7 @@ t2ab(N1,Filex1,Stringx1,M1,Words_to_read) :-
 	br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N,[],AlgString),
 	
 	%writeln("Press <return> to save work:"),read_string(user_input,"\n","\r",_,_),
-	
+
 	sort(BrDict2,BrDict3),
 	(BrDict03=BrDict3->true;
 	(open_s("../Text-to-Breasonings/brdict1.txt",write,Stream),
@@ -356,7 +356,9 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	%trace,
 	
 	(member([Word3,String4],BrDict)-> 
-	(BrDict3=BrDict,AlgString1=AlgString3,String5=String4);
+	(BrDict3=BrDict,AlgString1=AlgString3,
+	(String4=""->String41=Word3;String41=String4),
+	String5=String41);
 	((repeat,
 	write("Enter object name (without spaces), if different for "), writeln(Word3),read_string(user_input, "\n", "\r", _End2, String2),split_string(String2, "", " ", String3),String3=[String4]),
 	%%*brth(Word3,_Brth),
@@ -369,15 +371,17 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	),
 
 	downcase_atom(String5, String52), atom_string(String52,String53),
-
+%trace,
 	(member([String53,X1],AlgDict4)->
-	(AlgDict41=AlgDict4,AlgString3=AlgString4,String51=X1);
+	(AlgDict41=AlgDict4,AlgString3=AlgString4,
+	(X1=""->StringX1=String53;StringX1=X1),
+	String51=StringX1);
 	
 	((repeat,
-	write("Enter algorithm name for "), writeln(String53),read_string(user_input, "\n", "\r", _, String21),split_string(String21, "", " ", String31),String31=[String41]),
+	write("Enter algorithm name for "), writeln(String53),read_string(user_input, "\n", "\r", _, String21),split_string(String21, "", " ", String31),String31=[String411]),
 	%%*brth(Word3,_Brth),
 
-(String41=""->String51=String53;String51=String41),
+(String411=""->String51=String53;String51=String411),
 	append(AlgDict4,[[String53,String51]],AlgDict41),
 	append(AlgString3,[String51," "],AlgString4)
 	%texttobr2(1,u,String51,1)
