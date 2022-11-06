@@ -353,7 +353,7 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	%trace,
 	
 	(member([Word3,String4],BrDict)-> 
-	(BrDict3=BrDict,AlgString1=AlgString3,String5=Word3);
+	(BrDict3=BrDict,AlgString1=AlgString3,String5=String4);
 	((repeat,
 	write("Enter object name (without spaces), if different for "), writeln(Word3),read_string(user_input, "\n", "\r", _End2, String2),split_string(String2, "", " ", String3),String3=[String4]),
 	%%*brth(Word3,_Brth),
@@ -367,8 +367,8 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 
 	downcase_atom(String5, String52), atom_string(String52,String53),
 
-	(member([String53,_X],AlgDict4)->
-	(AlgDict41=AlgDict4,AlgString3=AlgString4,String51=String53);
+	(member([String53,X1],AlgDict4)->
+	(AlgDict41=AlgDict4,AlgString3=AlgString4,String51=X1);
 	
 	((repeat,
 	write("Enter algorithm name for "), writeln(String53),read_string(user_input, "\n", "\r", _, String21),split_string(String21, "", " ", String31),String31=[String41]),
@@ -382,11 +382,12 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 
 	downcase_atom(String51, String521), atom_string(String521,String531),
 
-	(member([String531,_Y],AlgDict6)->
+	(member([String531,_Y1],AlgDict6)->
 	(AlgDict61=AlgDict6,AlgString4=AlgString5);
 	
 	((repeat,
-	write("Enter Prolog algorithm for "), writeln(String531),read_string(user_input, "\n", "\r", _End, String),%split_string(String, ",", " ", Values),Values=[X1,Y1,Z1],number_string(X,X1),number_string(Y,Y1),number_string(Z,Z1)),
+	write("Enter Prolog algorithm for "), writeln(String531),read_string(user_input, "\n", "\r", _End, String1),
+	split_string(String1, "\n\r", "\n\r", String),%Values=[X1,Y1,Z1],number_string(X,X1),number_string(Y,Y1),number_string(Z,Z1)),
 	(String=""->String11=String531;String11=String),
 	
 	append(AlgDict6,[[String531,String11]],AlgDict61),
