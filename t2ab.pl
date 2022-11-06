@@ -45,6 +45,9 @@ t2ab(N1,Filex1,Stringx1,M1,Words_to_read) :-
 
 	prep(List1,BrDict03,AlgDict_x,AlgDict,Filex,Stringx1,M),
 	br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N,[],AlgString),
+	
+	writeln("Press <return> to save work:"),read_string(user_input,"\n","\r",_,_),
+	
 	sort(BrDict2,BrDict3),
 	(BrDict03=BrDict3->true;
 	(open_s("../Text-to-Breasonings/brdict1.txt",write,Stream),
