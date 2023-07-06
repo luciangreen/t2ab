@@ -163,7 +163,7 @@ string_atom(AlgDict0,Atom1),atom_to_term(Atom1,AlgDict01,_),
 	phrase_from_file_s(string(String001), Filex))->true;
 	String001=Stringx1),
 	
-	process_t2b(String001,String00),
+	process_t2ab(String001,String00),
 
 	split_string(String00,SepandPad,SepandPad,List1),
 	%%split_string_onnonletter(String00,List1),
@@ -420,17 +420,17 @@ br(Words,BrDict3,BrDict2,AlgDict41,AlgDict5,AlgDict61,AlgDict7,AlgString5,AlgStr
 %% finds unknown words, asks for their br in form "n of m: word", verify, (can go back x) append and sort, save
 
 
-process_t2b(A,C) :-
- replace_t2b(Replacements),
+process_t2ab(A,C) :-
+ replace_t2ab(Replacements),
  atom_string(A1,A),
- replace1_t2b(Replacements,A1,D1),
+ replace1_t2ab(Replacements,A1,D1),
  atom_string(D1,C),!.
  
-replace1_t2b([],A,A) :- !.
-replace1_t2b(Replacements,A,D) :-
+replace1_t2ab([],A,A) :- !.
+replace1_t2ab(Replacements,A,D) :-
  Replacements=[[B,C]|G],
  atomic_list_concat(E,B,A),
  atomic_list_concat(E,C,F),
- replace1_t2b(G,F,D),!.
+ replace1_t2ab(G,F,D),!.
 
-	replace_t2b([['\\',''],['–',' '],['“','\''],['”','\''],['‘','\''],['’','\'']]).
+	replace_t2ab([['\\',''],['–',' '],['“','\''],['”','\''],['‘','\''],['’','\'']]).
