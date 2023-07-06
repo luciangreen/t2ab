@@ -26,8 +26,13 @@
 
 %% Brth is true or false
 t2ab(N1,Filex1,Stringx1,M1) :-
-	t2ab(N1,Filex1,Stringx1,M1,0).
-t2ab(N1,Filex1,Stringx1,M1,Words_to_read) :-
+	t2ab(N1,Filex1,Stringx1,M1,0,off).
+t2ab(N1,Filex1,Stringx1,M1,Auto) :-
+	t2ab(N1,Filex1,Stringx1,M1,0,Auto).
+t2ab(N1,Filex1,Stringx1,M1,Words_to_read,Auto) :-
+	retractall(auto(_)),
+	assertz(auto(Auto)),
+
 	retractall(complete_display(_)),
 	assertz(complete_display(false)),
 
@@ -57,7 +62,7 @@ t2ab(N1,Filex1,Stringx1,M1,Words_to_read) :-
 
 	sort(AlgDict_x2,AlgDict_x3),
 	(AlgDict_x=AlgDict_x3->true;
-	(open_s("algdict1.txt",write,Stream2),
+	(open_s("../t2ab/algdict1.txt",write,Stream2),
 %%	string_codes(BrDict3),
 	term_to_atom(AlgDict_x3,AlgDict_x31),
 	write(Stream2,AlgDict_x31),
@@ -65,7 +70,7 @@ t2ab(N1,Filex1,Stringx1,M1,Words_to_read) :-
  	
 	sort(AlgDict2,AlgDict3),
 	(AlgDict=AlgDict3->true;
-	(open_s("algdict2.txt",write,Stream3),
+	(open_s("../t2ab/algdict2.txt",write,Stream3),
 	term_to_atom(AlgDict3,AlgDict31),
 %%	string_codes(BrDict3),
 	write(Stream3,AlgDict31),
@@ -112,7 +117,7 @@ prep(List,BrDict03,AlgDict_x,AlgDict,Filex,Stringx1,M) :-
 	
 	%%writeln(''),
 	%%writeln([brdict2]),
-	phrase_from_file_s(string(BrDict0t), "algdict1.txt"),
+	phrase_from_file_s(string(BrDict0t), "../t2ab/algdict1.txt"),
 	%%Chars="’",
 	%%split_string(BrDict0,SepandPad,SepandPad,BrDict01),
 %%writeln([brDict0,BrDict0]),
@@ -133,7 +138,7 @@ string_atom(BrDict0t,Atom),atom_to_term(Atom,BrDict01t,_),
 	
 	%trace,
 	
-	phrase_from_file_s(string(AlgDict0), "algdict2.txt"),
+	phrase_from_file_s(string(AlgDict0), "../t2ab/algdict2.txt"),
 	%%Chars="’",
 	%%split_string(BrDict0,SepandPad,SepandPad,BrDict01),
 %%writeln([brDict0,BrDict0]),
@@ -155,9 +160,11 @@ string_atom(AlgDict0,Atom1),atom_to_term(Atom1,AlgDict01,_),
 		
 	
 	((Stringx1=u,
-	phrase_from_file_s(string(String00), Filex))->true;
-	String00=Stringx1),
+	phrase_from_file_s(string(String001), Filex))->true;
+	String001=Stringx1),
 	
+	process_t2b(String001,String00),
+
 	split_string(String00,SepandPad,SepandPad,List1),
 	%%split_string_onnonletter(String00,List1),
 
@@ -360,7 +367,7 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	(String4=""->String41=Word3;String41=String4),
 	String5=String41);
 	((repeat,
-	write("Enter object name (without spaces), if different for "), writeln(Word3),read_string(user_input, "\n", "\r", _End2, String2),split_string(String2, "", " ", String3),String3=[String4]),
+	write("Enter object name (without spaces), if different for "), writeln(Word3),(auto(on)->String2="plus";read_string(user_input, "\n", "\r", _End2, String2)),split_string(String2, "", " ", String3),String3=[String4]),
 	%%*brth(Word3,_Brth),
 
 (String4=""->String5=Word3;String5=String4),
@@ -378,7 +385,7 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	String51=StringX1);
 	
 	((repeat,
-	write("Enter algorithm name for "), writeln(String53),read_string(user_input, "\n", "\r", _, String21),split_string(String21, "", " ", String31),String31=[String411]),
+	write("Enter algorithm name for "), writeln(String53),(auto(on)->String21="write";read_string(user_input, "\n", "\r", _, String21)),split_string(String21, "", " ", String31),String31=[String411]),
 	%%*brth(Word3,_Brth),
 
 (String411=""->String51=String53;String51=String411),
@@ -393,7 +400,7 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	(AlgDict61=AlgDict6,AlgString4=AlgString5);
 	
 	((repeat,
-	write("Enter Prolog algorithm for "), writeln(String531),read_string(user_input, "\n", "\r", _End, String1),
+	write("Enter Prolog algorithm for "), writeln(String531),(auto(on)->String1="writeln(A)";read_string(user_input, "\n", "\r", _End, String1)),
 	split_string(String1, "\n\r", "\n\r", String),%Values=[X1,Y1,Z1],number_string(X,X1),number_string(Y,Y1),number_string(Z,Z1)),
 	(String=""->String11=String531;String11=String),
 	
@@ -411,3 +418,19 @@ br(Words,BrDict3,BrDict2,AlgDict41,AlgDict5,AlgDict61,AlgDict7,AlgString5,AlgStr
 	%%).
 
 %% finds unknown words, asks for their br in form "n of m: word", verify, (can go back x) append and sort, save
+
+
+process_t2b(A,C) :-
+ replace_t2b(Replacements),
+ atom_string(A1,A),
+ replace1_t2b(Replacements,A1,D1),
+ atom_string(D1,C),!.
+ 
+replace1_t2b([],A,A) :- !.
+replace1_t2b(Replacements,A,D) :-
+ Replacements=[[B,C]|G],
+ atomic_list_concat(E,B,A),
+ atomic_list_concat(E,C,F),
+ replace1_t2b(G,F,D),!.
+
+	replace_t2b([['\\',''],['–',' '],['“','\''],['”','\''],['‘','\''],['’','\'']]).
