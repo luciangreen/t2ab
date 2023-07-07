@@ -48,8 +48,25 @@ t2ab(N1,Filex1,Stringx1,M1,Words_to_read,Auto) :-
 	((number(M1),M=M1)->true;
 	M=all), %% If m1 is undefined or all then m=all
 
-	prep(List1,BrDict03,AlgDict_x,AlgDict,Filex,Stringx1,M),
-	br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N,[],AlgString),
+	t2ab_prep(List1,BrDict03,AlgDict_x,AlgDict,Filex,Stringx1,M),
+	
+	retractall(t2ab_brDict03(_)),
+	assertz(t2ab_brDict03(BrDict03)),
+
+	retractall(t2ab_algDict_x(_)),
+	assertz(t2ab_algDict_x(AlgDict_x)),
+
+	retractall(t2ab_algDict(_)),
+	assertz(t2ab_algDict(AlgDict)),
+
+	retractall(t2ab_algString(_)),
+	assertz(t2ab_algString([])),
+	t2ab_br2(List1,N),%,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N,[],AlgString),
+	
+	t2ab_brDict031(BrDict2),
+	t2ab_algDict_x1(AlgDict_x2),
+	t2ab_algDict1(AlgDict2),
+	t2ab_algString1(AlgString),
 	
 	%writeln("Press <return> to save work:"),read_string(user_input,"\n","\r",_,_),
 
@@ -96,7 +113,7 @@ truncate(List1,M,String0) :-
 	append(String0,_,List1))->true;
 	String0=List1),!.
 	
-prep(List,BrDict03,AlgDict_x,AlgDict,Filex,Stringx1,M) :-
+t2ab_prep(List,BrDict03,AlgDict_x,AlgDict,Filex,Stringx1,M) :-
 	phrase_from_file_s(string(BrDict0), "../Text-to-Breasonings/brdict1.txt"),
 	%%Chars="’",
 	SepandPad="&#@~%`$?-+*^,()|.:;=_/[]<>{}\n\r\s\t\\\"!'0123456789",
@@ -246,11 +263,24 @@ string_atom(AlgDict0,Atom1),atom_to_term(Atom1,AlgDict01,_),
 
 ,!.
 
-br2(_,A,A,B,B,C,C,0,L,L) :- !.
-br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N1,L1,L2) :-
-	br(List1,BrDict03,BrDict21,AlgDict_x,AlgDict_x21,AlgDict,AlgDict21,L1,L3),
-	N2 is N1-1,
-	br2(List1,BrDict21,BrDict2,AlgDict_x21,AlgDict_x2,AlgDict21,AlgDict2,N2,L3,L2),!.
+%n2(N) :-n(N).
+t2ab_brDict031(BrDict2) :- t2ab_brDict03(BrDict2).
+t2ab_algDict_x1(BrDict03t2) :- t2ab_algDict_x(BrDict03t2).
+t2ab_algDict1(BrDict03t2) :- t2ab_algDict(BrDict03t2).
+t2ab_algString1(BrDict03t2) :- t2ab_algString(BrDict03t2).
+
+
+t2ab_br2(List1,N):-%_,A,A,B,B,C,C,0,L,L) :- !.
+%br2(List1,BrDict03,BrDict2,AlgDict_x,AlgDict_x2,AlgDict,AlgDict2,N1,L1,L2) :-
+
+	length(NL,N),
+	findall(_,(member(_,NL),
+	(auto(on)->
+	concurrent_maplist(t2ab_br,List1,_);
+	maplist(t2ab_br,List1,_))),_),!.
+	%br(List1,BrDict03,BrDict21,AlgDict_x,AlgDict_x21,AlgDict,AlgDict21,L1,L3),
+%	N2 is N1-1,
+	%br2(List1,BrDict21,BrDict2,AlgDict_x21,AlgDict_x2,AlgDict21,AlgDict2,N2,L3,L2),!.
 
 towords2([],A,A) :- !.
 towords2(BrDict03,A,B) :-
@@ -334,11 +364,12 @@ digits([X|Xs]) --> [X], {(char_type(X,digit)->true;(string_codes(Word2,[X]),Word
 %%digits([X]) --> [X], {(char_type(X,digit);(string_codes(Word2,[X]),Word2="."))}, !.
 digits([]) --> [].
 
-br([],B,B,C,C,D,D,L,L) :-
-	!.
-br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,AlgString2) :-
+t2ab_br(Word,_):-%[],B,B,C,C,D,D,L,L) :-
+%	!.
+%br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,AlgString2) :-
 	downcase_atom(Word, Word2), atom_string(Word2,Word3),
 	
+	/*
 	words_to_read(WR1),
 	(WR1>0->(writeln(WR1),write(Word),
 	texttobr2(3),nl,sleep(0.12),
@@ -346,6 +377,7 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	retractall(words_to_read(_)),
 	assertz(words_to_read(WR2)));
 	true),
+	*/
 	
 	/**member([Word3,X,Y,Z],AlgDict4) -> %% This feature is a bug because words in brdict2 shouldn't necessarily be the words in brdict1
 	%%(append(BrDict,[[Word3,""]],BrDict3), BrDict3t=AlgDict4,
@@ -361,7 +393,9 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	%%writeln([word3,Word3]),
 	
 	%trace,
-	
+	t2ab_brDict031(BrDict),
+ 	t2ab_algString1(AlgString1),
+ 
 	(member([Word3,String4],BrDict)-> 
 	(BrDict3=BrDict,AlgString1=AlgString3,
 	(String4=""->String41=Word3;String41=String4),
@@ -377,6 +411,8 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	)
 	),
 
+	t2ab_algDict_x1(AlgDict4),
+	
 	downcase_atom(String5, String52), atom_string(String52,String53),
 %trace,
 	(member([String53,X1],AlgDict4)->
@@ -394,8 +430,10 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 	%texttobr2(1,u,String51,1)
 	)),
 
-	downcase_atom(String51, String521), atom_string(String521,String531),
+	downcase_atom(String51, String521),
+ 	atom_string(String521,String531),
 
+	t2ab_algDict1(AlgDict6),
 	(member([String531,_Y1],AlgDict6)->
 	(AlgDict61=AlgDict6,AlgString4=AlgString5);
 	
@@ -412,9 +450,22 @@ br([Word|Words],BrDict,BrDict2,AlgDict4,AlgDict5,AlgDict6,AlgDict7,AlgString1,Al
 %%	writeln([Word3,X,Y,Z]),
 	%%write(' '),
 	
-	
+retractall(t2ab_brDict03(_)),
+assertz(t2ab_brDict03(BrDict3)),
 
-br(Words,BrDict3,BrDict2,AlgDict41,AlgDict5,AlgDict61,AlgDict7,AlgString5,AlgString2).
+retractall(t2ab_algDict_x(_)),
+assertz(t2ab_algDict_x(AlgDict41)),
+
+retractall(t2ab_algDict(_)),
+assertz(t2ab_algDict(AlgDict61)),
+
+retractall(t2ab_algString(_)),
+assertz(t2ab_algString(AlgString5)),
+
+!.
+
+
+%br(Words,BrDict3,BrDict2,AlgDict41,AlgDict5,AlgDict61,AlgDict7,AlgString5,AlgString2).
 	%%).
 
 %% finds unknown words, asks for their br in form "n of m: word", verify, (can go back x) append and sort, save
