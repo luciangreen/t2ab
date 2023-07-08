@@ -103,7 +103,7 @@ t2ab(N1,Filex1,Stringx1,M1,Words_to_read,Auto) :-
  	flatten(AlgString,AlgString1),
  	foldr(string_concat,AlgString1,"",AlgString2),
 	%writeln1(AlgString2),
-	texttobr2(u,u,AlgString2,u),
+	texttobr2(u,u,AlgString2,u,[auto,Auto]),
 
  	!.
 
