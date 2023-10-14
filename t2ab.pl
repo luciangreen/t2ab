@@ -21,6 +21,7 @@
 
 :- include('../listprologinterpreter/listprolog').
 :- include('../Text-to-Breasonings/texttobr2qb').
+:- include('../Philosophy/14 10 23.pl').
 
 %:- include('../listprologinterpreter/la_strings').
 
@@ -180,9 +181,10 @@ string_atom(AlgDict0,Atom1),atom_to_term(Atom1,AlgDict01,_),
 	phrase_from_file_s(string(String001), Filex))->true;
 	String001=Stringx1),
 	
-	process_t2ab(String001,String00),
+	%process_t2ab
+	split_on_non_alpha(String001,List1),
 
-	split_string(String00,SepandPad,SepandPad,List1),
+	%split_string(String00,SepandPad,SepandPad,List1),
 	%%split_string_onnonletter(String00,List1),
 
 	truncate(List1,M,List),
@@ -470,7 +472,7 @@ assertz(t2ab_algString(AlgString5)),
 
 %% finds unknown words, asks for their br in form "n of m: word", verify, (can go back x) append and sort, save
 
-
+/*
 process_t2ab(A,C) :-
  replace_t2ab(Replacements),
  atom_string(A1,A),
@@ -485,3 +487,4 @@ replace1_t2ab(Replacements,A,D) :-
  replace1_t2ab(G,F,D),!.
 
 	replace_t2ab([['\\',''],['–',' '],['“','\''],['”','\''],['‘','\''],['’','\'']]).
+*/
