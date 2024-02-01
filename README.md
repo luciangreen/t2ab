@@ -19,6 +19,8 @@ Download <a href="http://github.com/luciangreen/t2ab/">this repository</a>, the 
 * Download the <a href="https://github.com/luciangreen/List-Prolog-Package-Manager">LPPM Repository</a>:
 
 ```
+mkdir GitHub
+cd GitHub/
 git clone https://github.com/luciangreen/List-Prolog-Package-Manager.git
 cd List-Prolog-Package-Manager
 swipl
