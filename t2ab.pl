@@ -117,7 +117,7 @@ truncate(List1,M,String0) :-
 t2ab_prep(List,BrDict03,AlgDict_x,AlgDict,Filex,Stringx1,M) :-
 	phrase_from_file_s(string(BrDict0), "../Text-to-Breasonings/brdict1.txt"),
 	%%Chars="’",
-	SepandPad="&#@~%`$?-+*^,()|.:;=_/[]<>{}\n\r\s\t\\\"!'0123456789",
+	%SepandPad="&#@~%`$?-+*^,()|.:;=_/[]<>{}\n\r\s\t\\\"!'0123456789",
 	%%split_string(BrDict0,SepandPad,SepandPad,BrDict01),
 %%writeln([brDict0,BrDict0]),
 %%writeln([brdict1]),
@@ -183,7 +183,7 @@ string_atom(AlgDict0,Atom1),atom_to_term(Atom1,AlgDict01,_),
 	
 	process_t2ab(String001,String00),
 
-	split_string(String00,SepandPad,SepandPad,List1),
+	split_string_on_non_alpha(String00,List1),
 	%%split_string_onnonletter(String00,List1),
 
 	truncate(List1,M,List),
