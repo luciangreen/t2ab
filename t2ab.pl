@@ -13,17 +13,17 @@
 %% brdict1.txt contains word and object name, brdict2.txt contains object name and x, y and z
 
 %% texttobr2(Runs,File,StringtoBreason,BreasoningLimit).
-%:- include('../listprologinterpreter/la_strings.pl').
-:- include('../Text-to-Breasonings/mergetexttobrdict.pl').
+%:-include('../listprologinterpreter/la_strings.pl').
+:-include('../Text-to-Breasonings/mergetexttobrdict.pl').
 
 :-include('../Text-to-Breasonings/texttobr.pl').
 :-include('../Text-to-Breasonings/text_to_breasonings.pl').
 
-:- include('../listprologinterpreter/listprolog').
-:- include('../Text-to-Breasonings/texttobr2qb').
-%:- include('../Philosophy/14 10 23.pl').
+:-include('../listprologinterpreter/listprolog').
+:-include('../Text-to-Breasonings/texttobr2qb').
+%:-include('../Philosophy/14 10 23.pl').
 
-%:- include('../listprologinterpreter/la_strings').
+%:-include('../listprologinterpreter/la_strings.pl').
 
 %% Brth is true or false
 t2ab(N1,Filex1,Stringx1,M1) :-
